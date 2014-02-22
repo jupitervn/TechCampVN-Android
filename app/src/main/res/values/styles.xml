@@ -16,17 +16,43 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarStyle">@style/Styled.ActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/Styled.ActionBar.TabText</item>
+        <item name="android:actionBarTabStyle">@style/Styled.ActionBar.TabStyle</item>
+        <item name="android:actionBarTabBarStyle">@style/Styled.ActionBar.TabBar</item>
         <!-- Support library compatibility -->
 
-        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/Styled.ActionBar</item>
+        <item name="actionBarTabTextStyle">@style/Styled.ActionBar.TabText</item>
+        <item name="actionBarTabStyle">@style/Styled.ActionBar.TabStyle</item>
+        <item name="actionBarTabBarStyle">@style/Styled.ActionBar.TabBar</item>
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="Styled.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">#FF0000</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_styled</item>
+        <item name="android:backgroundSplit">@drawable/ab_solid_styled</item>
 
         <!-- Support library compatibility -->
         <!--<item name="background">@drawable/ab</item>-->
+    </style>
+
+    <style name="Styled.ActionBar.TabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textColor">@color/tab_bar_text_color</item>
+        <item name="android:textSize">11sp</item>
+        <!-- The textColor property is backward compatible with the Support Library -->
+    </style>
+
+    <style name="Styled.ActionBar.TabStyle" parent="@style/Widget.AppCompat.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_styled</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:minWidth">75dp</item>
+
+    </style>
+    <style name="Styled.ActionBar.TabBar" parent="@style/Widget.AppCompat.ActionBar.TabBar">
+        <item name="android:dividerPadding">17dp</item>
+        <item name="dividerPadding">5dp</item>
     </style>
 
 </resources>

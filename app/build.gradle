@@ -22,4 +22,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile files('libs/android-async-http-1.4.4.jar')
     compile files('libs/picasso-2.1.1.jar')
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
+    compile 'com.google.code.gson:gson:+'
 }

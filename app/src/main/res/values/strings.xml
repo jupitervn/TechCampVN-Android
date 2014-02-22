@@ -1,5 +1,8 @@
 <resources>
 
-    <string name="app_name">TechCamp</string>
-
+    <string name="app_name">TechCamp VN</string>
+    <string name="action_bar_title">TechCamp Saigon</string>
+    <string name="browse_talks">BROWSE TALKS</string>
+    <string name="saved_talks">SAVED TALKS</string>
+    <string name="announcements">ANNOUNCEMENTS</string>
 </resources>
