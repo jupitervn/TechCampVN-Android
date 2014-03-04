@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    </resources>
+    <!-- xhdpi dimens, move to xhdpi later -->
+    <dimen name="item_topic_side_padding">20dp</dimen>
+    <dimen name="item_topic_vertical_padding">10dp</dimen>
+
+</resources>

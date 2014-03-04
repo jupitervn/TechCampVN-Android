@@ -1,4 +1,4 @@
-package vn.techcamp.ui;
+package vn.techcamp.utils;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -10,7 +10,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public class JSONUtils {
     public static Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+            .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
 
     public static <T> T parseJson(Class<T> cls, String json) throws JsonSyntaxException {
         return gson.fromJson(json, cls);

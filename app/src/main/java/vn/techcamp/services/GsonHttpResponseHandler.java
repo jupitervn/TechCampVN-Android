@@ -2,8 +2,8 @@ package vn.techcamp.services;
 
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 
-import vn.techcamp.ui.JSONUtils;
-import vn.techcamp.ui.MiscUtils;
+import vn.techcamp.utils.JSONUtils;
+import vn.techcamp.utils.MiscUtils;
 
 
 /**
@@ -15,6 +15,7 @@ public abstract class GsonHttpResponseHandler<T> extends BaseJsonHttpResponseHan
     public GsonHttpResponseHandler(Class<T> clazz) {
         this.clazz = clazz;
     }
+
 
     @Override
     protected T parseResponse(String s) throws Throwable {

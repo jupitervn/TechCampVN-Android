@@ -30,3 +30,6 @@ proguard/
 org.eclipse.jdt.ui.prefs
 app/build
 .gradle
+pull-to-refresh-library/sample/src/com/handmark/pulltorefresh/samples
+pull-to-refresh-library/sample
+pull-to-refresh-library/build

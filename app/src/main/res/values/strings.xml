@@ -1,8 +1,18 @@
 <resources>
-
+    <!-- Common strings -->
     <string name="app_name">TechCamp VN</string>
     <string name="action_bar_title">TechCamp Saigon</string>
+    <string name="loading_text">Loading&#8230;</string>
+    <!-- Main activity -->
     <string name="browse_talks">BROWSE TALKS</string>
     <string name="saved_talks">SAVED TALKS</string>
     <string name="announcements">ANNOUNCEMENTS</string>
+    <!-- Browse talks tab -->
+    <string name="topic_fetch_error">Cannot load data from server, please check your connection and try again.</string>
+    <string name="topic_vote_error">Cannot process your request, please check your connection and try again.</string>
+    <plurals name="topic_vote_count">
+        <item quantity="zero">%d vote</item>
+        <item quantity="one">%d vote</item>
+        <item quantity="other">%d votes</item>
+    </plurals>
 </resources>

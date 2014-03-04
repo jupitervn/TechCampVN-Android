@@ -1,0 +1,20 @@
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '19.0.0'
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 19
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'library/AndroidManifest.xml'
+            java.srcDirs = ['library/src']
+            res.srcDirs = ['library/res']
+        }
+    }
+}
+
+
