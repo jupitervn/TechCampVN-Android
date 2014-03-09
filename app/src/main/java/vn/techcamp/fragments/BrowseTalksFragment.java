@@ -132,7 +132,6 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
                 }
             });
         }
-
     }
 
     private static class TopicAdapter extends CursorAdapter {

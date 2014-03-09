@@ -7,6 +7,10 @@
     <string name="browse_talks">BROWSE TALKS</string>
     <string name="saved_talks">SAVED TALKS</string>
     <string name="announcements">ANNOUNCEMENTS</string>
+    <string-array name="navigation_array">
+        <item>Vote</item>
+        <item>Schedule</item>
+    </string-array>
     <!-- Browse talks tab -->
     <string name="topic_fetch_error">Cannot load data from server, please check your connection and try again.</string>
     <string name="topic_vote_error">Cannot process your request, please check your connection and try again.</string>
@@ -15,4 +19,5 @@
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>
     </plurals>
+    
 </resources>

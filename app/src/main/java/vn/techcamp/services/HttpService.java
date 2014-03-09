@@ -74,7 +74,7 @@ public class HttpService {
             public void onFailure(Throwable e, JSONObject errorResponse) {
                 super.onFailure(e, errorResponse);
                 if (handler != null) {
-                    handler.onFailure(e, errorResponse.toString());
+                    handler.onFailure(e, errorResponse != null ? errorResponse.toString() : null);
                 }
             }
         });
@@ -95,5 +95,6 @@ public class HttpService {
     }
 
 
-}
+    public static void registerDevice
 
+}

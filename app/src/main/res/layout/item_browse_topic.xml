@@ -16,8 +16,9 @@
         android:text="1000 votes"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:padding="10dp"
-        android:background="#FF0000" />
+        android:textColor="@drawable/vote_text_color"
+        android:drawableTop="@drawable/vote_icon"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/tv_topic_name"
@@ -26,7 +27,7 @@
         android:textStyle="bold"
         android:text="Topic Name"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/bt_vote" />
+        android:layout_toLeftOf="@id/bt_vote"/>
 
     <TextView
         android:id="@+id/tv_topic_speaker"
@@ -35,6 +36,9 @@
         android:layout_toLeftOf="@id/bt_vote"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tv_topic_name"
-        android:text="Speaker name" />
+        android:drawableLeft="@drawable/person_icon"
+        android:drawablePadding="5dp"
+        android:layout_marginTop="10dp"
+        android:text="Speaker name"/>
 
 </RelativeLayout>
