@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import vn.techcamp.services.NotificationService;
+import vn.techcamp.utils.Logging;
 
 /**
  * @author Jupiter (vu.cao.duy@gmail.com) on 3/9/14.
@@ -14,7 +15,7 @@ import vn.techcamp.services.NotificationService;
 public class GCMNotificationReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        Logging.debug("Receive notification " + intent);
         ComponentName comp = new ComponentName(context.getPackageName(),
                 NotificationService.class.getName());
         // Start the service, keeping the device awake while it is launching.

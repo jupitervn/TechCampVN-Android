@@ -32,7 +32,10 @@ import vn.techcamp.utils.PreferenceUtils;
  * Created by Jupiter on 2/15/14.
  */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
-
+    public static final String EXTRA_TAB_INDEX = "extra-tab-index";
+    public static final int BROWSE_TAB = 0;
+    public static final int SAVED_TAB = 1;
+    public static final int ANNOUNCEMENT_TAB = 2;
     private static final String BROWSE_TAG = "browse";
     private static final String SAVED_TAG = "saved";
     private static final String ANNOUNCEMENT_TAG = "announcement";
@@ -58,6 +61,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         setContentView(R.layout.activity_main);
         initActionBar();
         registerGcm();
+        onNewIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int tabIndex = intent.getIntExtra(EXTRA_TAB_INDEX, 0);
+        if (tabIndex > ANNOUNCEMENT_TAB || tabIndex < BROWSE_TAB) {
+            tabIndex = 0;
+        }
+        getSupportActionBar().setSelectedNavigationItem(tabIndex);
     }
 
     @Override
@@ -110,7 +124,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     private String getRegistrationId(Context context) {
         String registrationId = PreferenceUtils.getGcmRegId(getApplicationContext());
-        if (registrationId != null && MiscUtils.isNotEmpty(registrationId)) {
+        if (registrationId != null && !MiscUtils.isNotEmpty(registrationId)) {
             Logging.debug("Registration not found.");
             return "";
         }
@@ -121,6 +135,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         int currentVersion = getAppVersion(context);
         if (registeredAppVersion != currentVersion) {
             Logging.debug("App version changed.");
+            PreferenceUtils.storeAppVersion(getApplicationContext(), currentVersion);
             return "";
         }
         return registrationId;

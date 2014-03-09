@@ -98,9 +98,7 @@ public class AnnouncementFragment extends BaseFragment implements PullToRefreshB
             lvAnnouncements.setAdapter(announcementAdapter);
         }
         if (isFirstTime) {
-            if (cursor.getCount() == 0) {
-                showLoadingDialog();
-            }
+            showLoadingDialog();
             doGetAnnouncements();
             isFirstTime = false;
         }

@@ -29,7 +29,8 @@
                    android:value="@integer/google_play_services_version" />
         <activity
             android:name="vn.techcamp.activities.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

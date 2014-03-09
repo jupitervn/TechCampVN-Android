@@ -52,22 +52,24 @@ public class NotificationService extends IntentService {
         String action = intent.getAction();
         if (ACTION_REGISTER_GCM.equals(action)) {
             doRegisterGCM();
-            stopSelf();
         } else if (ACTION_RECEIVE_NOTIFICATION.equals(action)) {
             handleGcmIntent(intent);
         }
     }
 
     private void doRegisterGCM() {
+        //TODO (D.Vu): Needs to retry when GCM registration failed.
         try {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
             String regid = gcm.register(SENDER_ID);
             // Persist the regID - no need to register again.
+            Logging.debug("Register Id " + regid);
             HttpService.registerDeviceToken(getApplicationContext(), regid);
             PreferenceUtils.storeGcmRegId(getApplicationContext(), regid);
         } catch (IOException ex) {
             Logging.error(ex.getMessage(), ex);
         }
+        stopSelf();
     }
 
     private void handleGcmIntent(Intent intent) {
@@ -79,8 +81,8 @@ public class NotificationService extends IntentService {
             Logging.debug("Received " + extras);
             if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                sendNotification("Hello");
-//                sendNotification("Received: " + extras.toString());
+                String content = extras.getString("default");
+                sendNotification(content);
             }
         }
         GCMNotificationReceiver.completeWakefulIntent(intent);
@@ -90,17 +92,20 @@ public class NotificationService extends IntentService {
     private void sendNotification(String msg) {
         mNotificationMgr = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+        Intent showAnnouncementPageIntent = new Intent(this, MainActivity.class);
+        showAnnouncementPageIntent.putExtra(MainActivity.EXTRA_TAB_INDEX, MainActivity.ANNOUNCEMENT_TAB);
+        showAnnouncementPageIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, showAnnouncementPageIntent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.techcamp_logo)
-                        .setContentTitle("GCM Notification")
+                        .setContentTitle(getString(R.string.app_name))
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
-                        .setContentText(msg);
+                        .setContentText(msg)
+                        .setAutoCancel(true);
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationMgr.notify(NOTIFICATION_ID, mBuilder.build());
