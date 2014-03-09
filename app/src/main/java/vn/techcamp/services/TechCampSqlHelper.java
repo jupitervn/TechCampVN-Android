@@ -11,6 +11,8 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.List;
 
+import vn.techcamp.models.Announcement;
+import vn.techcamp.models.BaseModel;
 import vn.techcamp.models.Topic;
 
 /**
@@ -18,11 +20,12 @@ import vn.techcamp.models.Topic;
  */
 public class TechCampSqlHelper extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "techcamp_events.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static TechCampSqlHelper _instance;
 
     private TechCampSqlHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
+        setForcedUpgrade();
     }
 
     public static TechCampSqlHelper getInstance(Context context) {
@@ -32,27 +35,51 @@ public class TechCampSqlHelper extends SQLiteAssetHelper {
         return _instance;
     }
 
+    /**
+     * Query topics from local database.
+     * @return
+     */
     public Cursor queryTopics() {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(TechCampSqlStructure.TABLE_TOPIC_NAME, null, null, null, null, null, TechCampSqlStructure.TABLE_TOPIC.VOTE_COUNT + " desc");
     }
 
+    /**
+     * Query announcement from local database.
+     * @return
+     */
+    public Cursor queryAnnouncements() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(TechCampSqlStructure.TABLE_ANNOUNCEMENT_NAME, null, null, null, null, null, TechCampSqlStructure.TABLE_ANNOUNCEMENT.DATE + " desc");
+    }
+
+
     public void insertTopics(List<Topic> topics) {
-        if (topics != null && !topics.isEmpty()) {
+        if (topics != null) {
+            bulkInsert(TechCampSqlStructure.TABLE_TOPIC_NAME, topics.toArray(new Topic[topics.size()]));
+        }
+    }
+
+    public void insertAnnouncements(Announcement[] announcements) {
+        bulkInsert(TechCampSqlStructure.TABLE_ANNOUNCEMENT_NAME, announcements);
+    }
+
+    private void bulkInsert(String tableName, BaseModel[] models) {
+        if (models!= null && models.length > 0) {
             SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             int count = 0;
             try {
-                for (Topic topic : topics) {
-                    if (topic != null) {
-                        ContentValues value = topic.toContentValues();
-                        long rowId = insertRecord(db, TechCampSqlStructure.TABLE_TOPIC_NAME, value);
+                for (BaseModel model : models) {
+                    if (model != null) {
+                        ContentValues value = model.toContentValues();
+                        long rowId = insertRecord(db, tableName, value);
                         if (rowId >= 0) {
                             count++;
                         }
                     }
                 }
-                if (count == topics.size()) {
+                if (count == models.length) {
                     db.setTransactionSuccessful();
                 }
             } catch (Exception ex) {

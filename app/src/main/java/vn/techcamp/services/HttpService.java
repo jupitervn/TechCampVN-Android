@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import vn.techcamp.models.Announcement;
 import vn.techcamp.models.Topic;
 import vn.techcamp.models.VoteResponse;
 import vn.techcamp.utils.JSONUtils;
@@ -30,7 +31,13 @@ public class HttpService {
     private static final String BASE_URL = "http://techcamp.vn/";
     private static final String VOTE_PATH = BASE_URL + "voting/topic/vote";
     private static final String TOPICS_PATH = BASE_URL + "voting/topic/api";
+    private static final String REGISTER_DEVICE_PATH = BASE_URL + "voting/notification/register";
+    private static final String ANNOUNCEMENT_PATH = BASE_URL + "voting/notification/list";
     private static AsyncHttpClient httpClient = new AsyncHttpClient();
+    private static int MAX_TIMEOUT = 35000;
+    static {
+        httpClient.setTimeout(MAX_TIMEOUT);
+    }
 
     /**
      * Get list of topics from techcamp server.
@@ -94,7 +101,65 @@ public class HttpService {
         httpClient.post(VOTE_PATH, params, handler);
     }
 
+    /**
+     * Register device token for notification purpose.
+     * @param context
+     * @param deviceToken
+     */
+    public static void registerDeviceToken(Context context, String deviceToken) {
+        RequestParams params = new RequestParams();
+        params.add("device_id", deviceToken);
+        params.add("platform", "Android");
 
-    public static void registerDevice
+        httpClient.post(REGISTER_DEVICE_PATH, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                super.onSuccess(response);
+                Logging.debug("Response " + response);
+            }
+
+            @Override
+            public void onFailure(Throwable e, JSONObject errorResponse) {
+                super.onFailure(e, errorResponse);
+            }
+        });
+    }
+
+    /**
+     * Get announcements from server.
+     * @param context
+     * @param handler
+     */
+    public static void getAnnouncements(final Context context, final GsonHttpResponseHandler<Announcement[]> handler) {
+        httpClient.get(ANNOUNCEMENT_PATH, null, new GsonHttpResponseHandler<Announcement[]>(Announcement[].class) {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String s, Announcement[] announcements) {
+                Logging.debug("Get announcements " + statusCode);
+                if (statusCode == 200) {
+                    if (handler != null) {
+                        handler.onSuccess(statusCode, headers, s, announcements);
+                    }
+                    if (context != null) {
+                        TechCampSqlHelper.getInstance(context).insertAnnouncements(announcements);
+                    }
+                } else {
+                    if (handler != null) {
+                        handler.onFailure(statusCode, headers, null, s, null);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, String s, Announcement[] announcements) {
+                if (handler != null) {
+                    handler.onFailure(statusCode, headers, throwable, s, null);
+                }
+            }
+        });
+    }
+
+
 
 }

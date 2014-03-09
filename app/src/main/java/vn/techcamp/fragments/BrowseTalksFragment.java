@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -67,6 +66,9 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
             lvTopics.setAdapter(topicAdapter);
         }
         if (isFirstTime) {
+            if (cursor.getCount() == 0) {
+                showLoadingDialog();
+            }
             getTopics();
             isFirstTime = false;
         }
@@ -92,7 +94,9 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, String s, Topic[] topics) {
                 Logging.debug("Load topics failed");
-                Toast.makeText(getActivity(), R.string.topic_fetch_error, Toast.LENGTH_LONG).show();
+                hideLoadingDialog();
+                lvTopics.onRefreshComplete();
+                showErrorToast(R.string.topic_fetch_error);
             }
         });
     }
@@ -129,6 +133,8 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
                 @Override
                 public void onFailure(int i, Header[] headers, Throwable throwable, String s, VoteResponse voteResponse) {
                     Logging.debug("Vote topic failure");
+                    hideLoadingDialog();
+                    showErrorToast(R.string.topic_vote_error);
                 }
             });
         }

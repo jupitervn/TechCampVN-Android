@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.Toast;
 
 import vn.techcamp.android.R;
 
@@ -66,6 +67,16 @@ public class BaseFragment extends Fragment {
             mProgressDialog.dismiss();
         }
         isShowingProgressDialog = false;
+    }
+
+    protected void showGeneralErrorToast() {
+
+    }
+
+    protected  void showErrorToast(int resId) {
+        if (getActivity() != null && !isAdded()) {
+            Toast.makeText(getActivity(), resId, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

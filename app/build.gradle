@@ -22,6 +22,7 @@ dependencies {
 
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:19.0.+'
+    compile 'com.google.android.gms:play-services:4.0.30'
     //compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'

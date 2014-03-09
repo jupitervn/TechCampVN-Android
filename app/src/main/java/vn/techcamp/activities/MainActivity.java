@@ -1,5 +1,9 @@
 package vn.techcamp.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,13 +13,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import vn.techcamp.android.R;
 import vn.techcamp.fragments.AnnouncementFragment;
 import vn.techcamp.fragments.BrowseTalksFragment;
 import vn.techcamp.fragments.SavedTalksFragment;
 import vn.techcamp.fragments.ScheduleFragment;
+import vn.techcamp.services.NotificationService;
 import vn.techcamp.utils.Logging;
+import vn.techcamp.utils.MiscUtils;
+import vn.techcamp.utils.PreferenceUtils;
 
 /**
  * Created by Jupiter on 2/15/14.
@@ -26,14 +37,33 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private static final String SAVED_TAG = "saved";
     private static final String ANNOUNCEMENT_TAG = "announcement";
     private static final String SCHEDULE_TAG = "schedule";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 0x1;
 
     private Spinner navigationSpinner;
+
+    private static int getAppVersion(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initActionBar();
+        registerGcm();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
     }
 
     private void initActionBar() {
@@ -45,6 +75,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         changeActionBar(BROWSE_TAG);
 
     }
+
     private void changeActionBar(String tag) {
         ActionBar actionBar = getSupportActionBar();
         if (BROWSE_TAG.equals(tag)) {
@@ -58,6 +89,62 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             actionBar.setTitle(R.string.action_bar_title);
             actionBar.setDisplayShowCustomEnabled(false);
         }
+    }
+
+    private void registerGcm() {
+        if (checkPlayServices()) {
+            String regId = getRegistrationId(this);
+            if (regId.isEmpty()) {
+                registerInBackground();
+            }
+        } else {
+            Logging.debug("No valid Google Play Services APK found.");
+        }
+    }
+
+    private void registerInBackground() {
+        Intent registerIntent = new Intent(this, NotificationService.class);
+        registerIntent.setAction(NotificationService.ACTION_REGISTER_GCM);
+        startService(registerIntent);
+    }
+
+    private String getRegistrationId(Context context) {
+        String registrationId = PreferenceUtils.getGcmRegId(getApplicationContext());
+        if (registrationId != null && MiscUtils.isNotEmpty(registrationId)) {
+            Logging.debug("Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredAppVersion = PreferenceUtils.getAppVersion(getApplicationContext());
+        int currentVersion = getAppVersion(context);
+        if (registeredAppVersion != currentVersion) {
+            Logging.debug("App version changed.");
+            return "";
+        }
+        return registrationId;
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Logging.debug("This device is not supported.");
+                Toast.makeText(this, R.string.gcm_not_supported_error, Toast.LENGTH_LONG).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -99,6 +186,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         public TabListener(MainActivity activity, String tag, Class<T> clz) {
             this(activity, tag, clz, null);
         }
+
         /**
          * Constructor used each time a new tab is created.
          *

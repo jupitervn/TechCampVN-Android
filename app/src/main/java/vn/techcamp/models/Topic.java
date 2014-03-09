@@ -10,7 +10,7 @@ import vn.techcamp.services.TechCampSqlStructure;
 /**
  * Created by jupiter on 22/2/14.
  */
-public class Topic {
+public class Topic extends BaseModel{
     private long id;
     private String title;
     private String description;
@@ -24,6 +24,7 @@ public class Topic {
     private Date createdAt;
 
     public Topic(Cursor cursor) {
+        super(cursor);
         setId(cursor.getLong(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.ID)));
         setTitle(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.TITLE)));
         setDescription(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.DESCRIPTION)));
