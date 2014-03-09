@@ -86,17 +86,21 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
             @Override
             public void onSuccess(int i, Header[] headers, String s, Topic[] topics) {
                 Logging.debug("Load topics success");
-                hideLoadingDialog();
-                lvTopics.onRefreshComplete();
-                getLoaderManager().restartLoader(0, null, BrowseTalksFragment.this);
+                if (getActivity() != null && isAdded()) {
+                    hideLoadingDialog();
+                    lvTopics.onRefreshComplete();
+                    getLoaderManager().restartLoader(0, null, BrowseTalksFragment.this);
+                }
             }
 
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, String s, Topic[] topics) {
                 Logging.debug("Load topics failed");
-                hideLoadingDialog();
-                lvTopics.onRefreshComplete();
-                showErrorToast(R.string.topic_fetch_error);
+                if (getActivity() != null && isAdded()) {
+                    hideLoadingDialog();
+                    lvTopics.onRefreshComplete();
+                    showErrorToast(R.string.topic_fetch_error);
+                }
             }
         });
     }
@@ -127,14 +131,18 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
                 @Override
                 public void onSuccess(int i, Header[] headers, String s, VoteResponse voteResponse) {
                     Logging.debug("Vote topic success");
-                    getTopics();
+                    if (getActivity() != null && isAdded()) {
+                        getTopics();
+                    }
                 }
 
                 @Override
                 public void onFailure(int i, Header[] headers, Throwable throwable, String s, VoteResponse voteResponse) {
                     Logging.debug("Vote topic failure");
-                    hideLoadingDialog();
-                    showErrorToast(R.string.topic_vote_error);
+                    if (getActivity() != null && isAdded()) {
+                        hideLoadingDialog();
+                        showErrorToast(R.string.topic_vote_error);
+                    }
                 }
             });
         }
@@ -142,6 +150,7 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
 
     private static class TopicAdapter extends CursorAdapter {
         private View.OnClickListener btVoteClickListener;
+
         public TopicAdapter(Context context, Cursor c, int flags, View.OnClickListener voteClickListener) {
             super(context, c, flags);
             this.btVoteClickListener = voteClickListener;

@@ -68,20 +68,25 @@ public class AnnouncementFragment extends BaseFragment implements PullToRefreshB
             @Override
             public void onSuccess(int i, Header[] headers, String s, Announcement[] announcements) {
                 Logging.debug("Get announcements success");
-                hideLoadingDialog();
-                lvAnnouncements.onRefreshComplete();
-                getLoaderManager().restartLoader(0, null, AnnouncementFragment.this);
+                if (getActivity() != null && isAdded()) {
+                    hideLoadingDialog();
+                    lvAnnouncements.onRefreshComplete();
+                    getLoaderManager().restartLoader(0, null, AnnouncementFragment.this);
+                }
             }
 
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, String s, Announcement[] announcements) {
                 Logging.debug("Get announcements error " + s);
-                hideLoadingDialog();
-                lvAnnouncements.onRefreshComplete();
-                showGeneralErrorToast();
+                if (getActivity() != null && isAdded()) {
+                    hideLoadingDialog();
+                    lvAnnouncements.onRefreshComplete();
+                    showGeneralErrorToast();
+                }
             }
         });
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new AnnouncementCursorLoader(getActivity().getApplicationContext());
@@ -131,4 +136,4 @@ public class AnnouncementFragment extends BaseFragment implements PullToRefreshB
 
         }
     }
- }
+}

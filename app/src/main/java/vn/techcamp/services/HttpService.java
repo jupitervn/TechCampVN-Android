@@ -148,7 +148,6 @@ public class HttpService {
                         handler.onFailure(statusCode, headers, null, s, null);
                     }
                 }
-
             }
 
             @Override
@@ -159,7 +158,5 @@ public class HttpService {
             }
         });
     }
-
-
 
 }

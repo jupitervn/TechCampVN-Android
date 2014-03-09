@@ -1,6 +1,7 @@
 package vn.techcamp.services;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -59,16 +60,28 @@ public class NotificationService extends IntentService {
 
     private void doRegisterGCM() {
         //TODO (D.Vu): Needs to retry when GCM registration failed.
-        try {
-            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-            String regid = gcm.register(SENDER_ID);
-            // Persist the regID - no need to register again.
-            Logging.debug("Register Id " + regid);
-            HttpService.registerDeviceToken(getApplicationContext(), regid);
-            PreferenceUtils.storeGcmRegId(getApplicationContext(), regid);
-        } catch (IOException ex) {
-            Logging.error(ex.getMessage(), ex);
-        }
+        int retryCounts = 1;
+        long retryTimes = 10000;
+        do {
+            try {
+                GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+                String regid = gcm.register(SENDER_ID);
+                // Persist the regID - no need to register again.
+                Logging.debug("Register Id " + regid);
+                HttpService.registerDeviceToken(getApplicationContext(), regid);
+                PreferenceUtils.storeGcmRegId(getApplicationContext(), regid);
+                break;
+            } catch (IOException ex) {
+                Logging.error(ex.getMessage(), ex);
+                retryCounts++;
+                try {
+                    Thread.sleep(retryTimes);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                retryTimes *= 2;
+            }
+        } while (retryCounts > 3);
         stopSelf();
     }
 
@@ -105,7 +118,8 @@ public class NotificationService extends IntentService {
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setContentText(msg)
-                        .setAutoCancel(true);
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL);
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationMgr.notify(NOTIFICATION_ID, mBuilder.build());

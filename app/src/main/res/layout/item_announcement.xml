@@ -3,16 +3,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:paddingRight="15dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_announce_time"/>
+        android:id="@+id/tv_announce_time"
+        android:drawableLeft="@drawable/paragraph_ticker"
+        android:text="Time"
+        android:drawablePadding="5dp"
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_announce_message"/>
+        android:id="@+id/tv_announce_message"
+        android:text="Content"
+        android:layout_marginTop="10dp"
+        />
 
 </LinearLayout>
