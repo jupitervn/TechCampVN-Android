@@ -22,6 +22,8 @@ public class Topic extends BaseModel{
     private long voteCount;
     private boolean voted;
     private Date createdAt;
+    private boolean faved;
+    private boolean favCount;
 
     public Topic(Cursor cursor) {
         super(cursor);
@@ -30,7 +32,7 @@ public class Topic extends BaseModel{
         setDescription(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.DESCRIPTION)));
         setSpeakerName(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_NAME)));
         setSpeakerDescription(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_DESCRIPTION)));
-//        setSpeakerUrl(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_URL)));
+        setSpeakerUrl(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_URL)));
         setSlideUrl(cursor.getString(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.SLIDE_URL)));
         setDuration(cursor.getInt(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.DURATION)));
         setCreatedAt(new Date(cursor.getLong(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.CREATED_AT))));
@@ -46,7 +48,7 @@ public class Topic extends BaseModel{
         value.put(TechCampSqlStructure.TABLE_TOPIC.DESCRIPTION, getDescription());
         value.put(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_NAME, getSpeakerName());
         value.put(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_DESCRIPTION, getSpeakerDescription());
-//        value.put(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_URL, getSpeakerUrl());
+        value.put(TechCampSqlStructure.TABLE_TOPIC.SPEAKER_URL, getSpeakerUrl());
         value.put(TechCampSqlStructure.TABLE_TOPIC.SLIDE_URL, getSlideUrl());
         value.put(TechCampSqlStructure.TABLE_TOPIC.DURATION, getDuration());
         if (getCreatedAt() != null) {
@@ -145,5 +147,21 @@ public class Topic extends BaseModel{
 
     public void setVoteCount(long voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public boolean isFaved() {
+        return faved;
+    }
+
+    public void setFaved(boolean faved) {
+        this.faved = faved;
+    }
+
+    public boolean isFavCount() {
+        return favCount;
+    }
+
+    public void setFavCount(boolean favCount) {
+        this.favCount = favCount;
     }
 }

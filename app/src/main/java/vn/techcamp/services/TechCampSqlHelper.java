@@ -20,7 +20,7 @@ import vn.techcamp.models.Topic;
  */
 public class TechCampSqlHelper extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "techcamp_events.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static TechCampSqlHelper _instance;
 
     private TechCampSqlHelper(Context context) {

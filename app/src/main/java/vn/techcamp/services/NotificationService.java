@@ -59,7 +59,6 @@ public class NotificationService extends IntentService {
     }
 
     private void doRegisterGCM() {
-        //TODO (D.Vu): Needs to retry when GCM registration failed.
         int retryCounts = 1;
         long retryTimes = 10000;
         do {

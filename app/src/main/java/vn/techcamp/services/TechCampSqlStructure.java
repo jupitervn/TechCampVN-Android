@@ -20,6 +20,8 @@ public class TechCampSqlStructure {
         public static final String DURATION = "duration";
         public static final String VOTED = "voted";
         public static final String VOTE_COUNT = "vote_count";
+        public static final String FAVOURITED = "favourited";
+        public static final String FAVOURITE_COUNT = "favourite_count";
         public static final String UPDATED_AT = "udpated_at";
         public static final String CREATED_AT = "created_at";
     }

@@ -2,8 +2,6 @@ package vn.techcamp.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -43,17 +41,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 0x1;
 
     private Spinner navigationSpinner;
-
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +119,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         // since the existing regID is not guaranteed to work with the new
         // app version.
         int registeredAppVersion = PreferenceUtils.getAppVersion(getApplicationContext());
-        int currentVersion = getAppVersion(context);
+        int currentVersion = MiscUtils.getAppVersion(context);
         if (registeredAppVersion != currentVersion) {
             Logging.debug("App version changed.");
             PreferenceUtils.storeAppVersion(getApplicationContext(), currentVersion);
@@ -174,6 +161,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment mFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        Logging.debug("On navigation " + (mFragment != null));
         if (mFragment == null) {
             mFragment = Fragment.instantiate(this, className, null);
             ft.add(android.R.id.content, mFragment, tag);

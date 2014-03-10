@@ -10,29 +10,68 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"/>
 
-    <TextView
-        android:id="@+id/tv_place"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_gravity="left"
-        android:text="@string/event_place"
-        />
+        android:layout_marginTop="20dp">
 
+        <TextView
+            android:id="@+id/tv_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="left"
+            android:text="@string/event_place"
+            android:paddingRight="@dimen/info_padding_with_icon"
+            android:paddingLeft="@dimen/info_padding"
+            style="@style/Styled.TextAppearance.Announcement.Info"
+            />
+        <ImageView
+            android:layout_width="@dimen/info_dot_size"
+            android:layout_height="@dimen/info_dot_size"
+            android:src="@drawable/techcamp_info_dot"
+            android:layout_marginRight="@dimen/info_dot_half_size"
+            android:adjustViewBounds="true"
+            android:layout_centerVertical="true"
+            android:layout_alignRight="@id/tv_place"
+            />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_gravity="right"
-        android:text="@string/event_time"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/event_time"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/info_padding_with_icon"
+            android:paddingRight="@dimen/info_padding"
+            style="@style/Styled.TextAppearance.Announcement.Info"
+            />
+
+        <ImageView
+            android:layout_width="@dimen/info_dot_size"
+            android:layout_height="@dimen/info_dot_size"
+            android:src="@drawable/techcamp_info_dot"
+            android:layout_marginLeft="@dimen/info_dot_half_size"
+            android:adjustViewBounds="true"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@id/tv_time"
+
+            />
+    </RelativeLayout>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/lv_announcements"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        >
 
     </com.handmark.pulltorefresh.library.PullToRefreshListView>
 </LinearLayout>
