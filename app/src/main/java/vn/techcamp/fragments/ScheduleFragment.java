@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import vn.techcamp.activities.BaseFragment;
+import vn.techcamp.android.R;
 
 /**
  * @author Jupiter (vu.cao.duy@gmail.com) on 3/7/14.
@@ -13,7 +14,7 @@ import vn.techcamp.activities.BaseFragment;
 public class ScheduleFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
 
     @Override

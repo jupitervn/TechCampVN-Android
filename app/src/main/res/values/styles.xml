@@ -14,7 +14,7 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:actionBarStyle">@style/Styled.ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/Styled.ActionBar.TabText</item>
@@ -73,6 +73,9 @@
         <item name="android:paddingBottom">@dimen/info_padding</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@android:color/black</item>
+    </style>
+    <style name="Styled.Navigation.Spinner" parent="@style/Widget.AppCompat.Base.Spinner">
+
     </style>
 
 </resources>

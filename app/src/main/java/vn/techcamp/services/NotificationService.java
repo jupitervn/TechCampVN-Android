@@ -13,10 +13,15 @@ import android.support.v4.app.NotificationCompat;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import vn.techcamp.activities.MainActivity;
 import vn.techcamp.android.R;
 import vn.techcamp.receivers.GCMNotificationReceiver;
+import vn.techcamp.utils.Configs;
+import vn.techcamp.utils.HttpUtils;
 import vn.techcamp.utils.Logging;
 import vn.techcamp.utils.PreferenceUtils;
 
@@ -122,5 +127,25 @@ public class NotificationService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationMgr.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    private void handleFetchAgenda() {
+        long startTime = System.currentTimeMillis();
+        boolean fetchResult = false;
+        try {
+            URL url = new URL(Configs.AGENDA_URL);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestProperty(HttpUtils.GDATA_VERSION_HTTP_HEADER, "3.0");
+            httpURLConnection.setConnectTimeout(HttpUtils.HTTP_TIMEOUT);
+            httpURLConnection.setReadTimeout(HttpUtils.HTTP_READ_TIMEOUT);
+            httpURLConnection.setDoOutput(false);
+            httpURLConnection.connect();
+            InputStreamReader streamReader = new InputStreamReader(httpURLConnection.getInputStream());
+
+            streamReader.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

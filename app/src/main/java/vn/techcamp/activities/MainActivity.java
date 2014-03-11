@@ -18,9 +18,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import vn.techcamp.android.R;
 import vn.techcamp.fragments.AnnouncementFragment;
-import vn.techcamp.fragments.BrowseTalksFragment;
+import vn.techcamp.fragments.BrowseContainerFragment;
 import vn.techcamp.fragments.SavedTalksFragment;
-import vn.techcamp.fragments.ScheduleFragment;
 import vn.techcamp.services.NotificationService;
 import vn.techcamp.utils.Logging;
 import vn.techcamp.utils.MiscUtils;
@@ -38,14 +37,24 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private static final String SAVED_TAG = "saved";
     private static final String ANNOUNCEMENT_TAG = "announcement";
     private static final String SCHEDULE_TAG = "schedule";
+    private static final String LAST_TAB_STATE = "last-tab-index";
+    private static final String CURRENT_SPINNER_POSITION = "current-spinner-position";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 0x1;
 
     private Spinner navigationSpinner;
+    private int currentSpinnerPosition = 0;
+    private int currentTabIndex = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState != null) {
+            currentSpinnerPosition = savedInstanceState.getInt(CURRENT_SPINNER_POSITION, 0);
+            currentTabIndex = savedInstanceState.getInt(LAST_TAB_STATE, 0);
+        }
         initActionBar();
         registerGcm();
         onNewIntent(getIntent());
@@ -54,7 +63,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        int tabIndex = intent.getIntExtra(EXTRA_TAB_INDEX, 0);
+        int tabIndex = intent.getIntExtra(EXTRA_TAB_INDEX, currentTabIndex);
         if (tabIndex > ANNOUNCEMENT_TAB || tabIndex < BROWSE_TAB) {
             tabIndex = 0;
         }
@@ -70,7 +79,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private void initActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.addTab(actionBar.newTab().setText(R.string.browse_talks).setTabListener(new TabListener<BrowseTalksFragment>(this, BROWSE_TAG, BrowseTalksFragment.class)));
+        actionBar.addTab(actionBar.newTab().setText(R.string.browse_talks).setTabListener(new TabListener<BrowseContainerFragment>(this, BROWSE_TAG, BrowseContainerFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(R.string.saved_talks).setTabListener(new TabListener<SavedTalksFragment>(this, SAVED_TAG, SavedTalksFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(R.string.announcements).setTabListener(new TabListener<AnnouncementFragment>(this, ANNOUNCEMENT_TAG, AnnouncementFragment.class)));
         changeActionBar(BROWSE_TAG);
@@ -84,12 +93,20 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             actionBar.setCustomView(customView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             actionBar.setDisplayShowCustomEnabled(true);
             navigationSpinner = (Spinner) customView.findViewById(R.id.sp_navigation);
-            navigationSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, getResources().getStringArray(R.array.navigation_array)));
+            navigationSpinner.setAdapter(new ArrayAdapter<String>(this, R.layout.item_navigation_list, android.R.id.text1, getResources().getStringArray(R.array.navigation_array)));
+            navigationSpinner.setSelection(currentSpinnerPosition);
             navigationSpinner.setOnItemSelectedListener(this);
         } else {
             actionBar.setTitle(R.string.action_bar_title);
             actionBar.setDisplayShowCustomEnabled(false);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(LAST_TAB_STATE, getSupportActionBar().getSelectedNavigationIndex());
+        outState.putInt(CURRENT_SPINNER_POSITION, currentSpinnerPosition);
+        super.onSaveInstanceState(outState);
     }
 
     private void registerGcm() {
@@ -151,24 +168,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String tag = BROWSE_TAG;
-        String className = BrowseTalksFragment.class.getName();
-        if (position == 1) {
-            tag = SCHEDULE_TAG;
-            className = ScheduleFragment.class.getName();
-        }
-        Logging.debug("On navigation " + position + " " + tag + " " + className);
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment mFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        BrowseContainerFragment mFragment = (BrowseContainerFragment) getSupportFragmentManager().findFragmentByTag(BROWSE_TAG);
         Logging.debug("On navigation " + (mFragment != null));
-        if (mFragment == null) {
-            mFragment = Fragment.instantiate(this, className, null);
-            ft.add(android.R.id.content, mFragment, tag);
-        } else {
-            ft.attach(mFragment);
+        if (mFragment != null) {
+            mFragment.switchFragment(position);
         }
-        ft.commit();
+        currentSpinnerPosition = position;
     }
 
     @Override
@@ -228,6 +233,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 ft.attach(mFragment);
             }
 //            mActivity.initActionBar(mTag);
+            mActivity.changeActionBar(mTag);
         }
 
         @Override
