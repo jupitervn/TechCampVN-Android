@@ -23,7 +23,10 @@ public class Topic extends BaseModel{
     private boolean voted;
     private Date createdAt;
     private boolean faved;
-    private boolean favCount;
+    private long favCount;
+    private boolean bookmarked;
+    private String roomName;
+    private String roomTime;
 
     public Topic(Cursor cursor) {
         super(cursor);
@@ -39,6 +42,9 @@ public class Topic extends BaseModel{
 //        setUpdatedAt(new Date(cursor.getLong(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.UPDATED_AT))));
         setVoteCount(cursor.getLong(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.VOTE_COUNT)));
         setVoted(cursor.getInt(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.VOTED)) > 0);
+        setBookmarked(cursor.getInt(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.BOOKMARKED)) > 0);
+        setFavCount(cursor.getLong(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.FAVOURITE_COUNT)));
+        setFaved(cursor.getInt(cursor.getColumnIndex(TechCampSqlStructure.TABLE_TOPIC.FAVOURITED)) > 0);
     }
 
     public ContentValues toContentValues() {
@@ -56,6 +62,8 @@ public class Topic extends BaseModel{
         }
         value.put(TechCampSqlStructure.TABLE_TOPIC.VOTE_COUNT, getVoteCount());
         value.put(TechCampSqlStructure.TABLE_TOPIC.VOTED, isVoted() ? 1 : 0);
+        value.put(TechCampSqlStructure.TABLE_TOPIC.FAVOURITED, isFaved() ? 1: 0);
+        value.put(TechCampSqlStructure.TABLE_TOPIC.FAVOURITE_COUNT, getFavCount());
         return value;
     }
 
@@ -157,11 +165,35 @@ public class Topic extends BaseModel{
         this.faved = faved;
     }
 
-    public boolean isFavCount() {
+    public long getFavCount() {
         return favCount;
     }
 
-    public void setFavCount(boolean favCount) {
+    public void setFavCount(long favCount) {
         this.favCount = favCount;
+    }
+
+    public boolean isBookmarked() {
+        return bookmarked;
+    }
+
+    public void setBookmarked(boolean bookmarked) {
+        this.bookmarked = bookmarked;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public String getRoomTime() {
+        return roomTime;
+    }
+
+    public void setRoomTime(String roomTime) {
+        this.roomTime = roomTime;
     }
 }

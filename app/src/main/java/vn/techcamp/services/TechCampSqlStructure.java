@@ -10,8 +10,8 @@ public class TechCampSqlStructure {
     public static final String ID_COL = "_id";
 
     public static class TABLE_TOPIC {
-        public static final String ID = ID_COL;
         public static final String TITLE = "title";
+        public static final String ID = ID_COL;
         public static final String DESCRIPTION = "description";
         public static final String SLIDE_URL = "slide_url";
         public static final String SPEAKER_NAME = "speaker_name";
@@ -22,15 +22,20 @@ public class TechCampSqlStructure {
         public static final String VOTE_COUNT = "vote_count";
         public static final String FAVOURITED = "favourited";
         public static final String FAVOURITE_COUNT = "favourite_count";
+        public static final String BOOKMARKED = "bookmarked";
         public static final String UPDATED_AT = "udpated_at";
         public static final String CREATED_AT = "created_at";
+        public static final String ROOM_NAME = "room_name";
+        public static final String ROOM_TIME = "room_time";
+
     }
 
 
     public static class TABLE_ANNOUNCEMENT {
-        public static final String ID = ID_COL;
         public static final String MESSAGE = "message";
+        public static final String ID = ID_COL;
         public static final String SUBJECT = "subject";
         public static final String DATE = "created_at";
+
     }
 }

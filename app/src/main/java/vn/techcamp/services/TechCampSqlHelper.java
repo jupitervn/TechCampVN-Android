@@ -14,13 +14,15 @@ import java.util.List;
 import vn.techcamp.models.Announcement;
 import vn.techcamp.models.BaseModel;
 import vn.techcamp.models.Topic;
+import vn.techcamp.utils.MiscUtils;
 
 /**
+ * 4: update room_name, room_time, bookmarked columns for topic.
  * @author Cao Duy Vu (vu.caod@skunkworks.vn)
  */
 public class TechCampSqlHelper extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "techcamp_events.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static TechCampSqlHelper _instance;
 
     private TechCampSqlHelper(Context context) {
@@ -39,9 +41,13 @@ public class TechCampSqlHelper extends SQLiteAssetHelper {
      * Query topics from local database.
      * @return
      */
-    public Cursor queryTopics() {
+    public Cursor queryTopics(String queryStr) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.query(TechCampSqlStructure.TABLE_TOPIC_NAME, null, null, null, null, null, TechCampSqlStructure.TABLE_TOPIC.VOTE_COUNT + " desc");
+        String selection = null;
+        if (MiscUtils.isNotEmpty(queryStr)) {
+            selection = TechCampSqlStructure.TABLE_TOPIC.TITLE + " LIKE '%" +queryStr + "%'";
+        }
+        return db.query(TechCampSqlStructure.TABLE_TOPIC_NAME, null, selection, null, null, null, TechCampSqlStructure.TABLE_TOPIC.VOTE_COUNT + " desc");
     }
 
     /**
@@ -51,6 +57,42 @@ public class TechCampSqlHelper extends SQLiteAssetHelper {
     public Cursor queryAnnouncements() {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(TechCampSqlStructure.TABLE_ANNOUNCEMENT_NAME, null, null, null, null, null, TechCampSqlStructure.TABLE_ANNOUNCEMENT.DATE + " desc");
+    }
+
+    /**
+     * Query topic detail by id.
+     * @param topicId
+     * @return
+     */
+    public Cursor queryTopicDetail(long topicId) {
+        SQLiteDatabase db = getReadableDatabase();
+        return  db.query(TechCampSqlStructure.TABLE_TOPIC_NAME, null, TechCampSqlStructure.TABLE_TOPIC.ID + " = ?", new String[] {String.valueOf(topicId)}, null, null, null, null);
+    }
+
+    public void udpateBookmarkState(long topicId, boolean isBookmark) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values= new ContentValues();
+        values.put(TechCampSqlStructure.TABLE_TOPIC.BOOKMARKED, isBookmark ? 1 : 0);
+        db.update(TechCampSqlStructure.TABLE_TOPIC_NAME, values, TechCampSqlStructure.TABLE_TOPIC.ID + " = ?", new String[] {String.valueOf(topicId)});
+    }
+
+    public void updateVoteState(long topicId, boolean isVote) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values= new ContentValues();
+        values.put(TechCampSqlStructure.TABLE_TOPIC.VOTED, isVote ? 1 : 0);
+        db.update(TechCampSqlStructure.TABLE_TOPIC_NAME, values, TechCampSqlStructure.TABLE_TOPIC.ID + " = ?", new String[] {String.valueOf(topicId)});
+    }
+
+    public void updateFavouriteState(long topicId, boolean isFavorite) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values= new ContentValues();
+        values.put(TechCampSqlStructure.TABLE_TOPIC.FAVOURITED, isFavorite ? 1 : 0);
+        db.update(TechCampSqlStructure.TABLE_TOPIC_NAME, values, TechCampSqlStructure.TABLE_TOPIC.ID + " = ?", new String[] {String.valueOf(topicId)});
+    }
+
+    public Cursor getSavedTopics() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(TechCampSqlStructure.TABLE_TOPIC_NAME, null, TechCampSqlStructure.TABLE_TOPIC.BOOKMARKED + " = ?", new String[] {"1"}, null, null, TechCampSqlStructure.TABLE_TOPIC.TITLE + " asc");
     }
 
 

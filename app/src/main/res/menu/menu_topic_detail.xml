@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:techcamp="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_vote"
+        android:title="Vote this topic"
+        techcamp:showAsAction="always"
+        techcamp:actionLayout="@layout/menu_item_vote"/>
+    <item
+        android:id="@+id/menu_bookmark"
+        android:title="Bookmark this topic"
+        techcamp:showAsAction="always"
+        techcamp:actionLayout="@layout/menu_item_bookmark"/>
+</menu>

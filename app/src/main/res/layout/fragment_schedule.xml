@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/techcamp_bot"
         android:layout_gravity="center"/>
-</LinearLayout>
+
+    <com.handmark.pulltorefresh.library.extras.PullToRefreshWebView2
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/wv_schedule"/>
+</FrameLayout>

@@ -1,6 +1,6 @@
 package vn.techcamp.fragments;
 
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -19,12 +18,15 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import org.apache.http.Header;
 
 import vn.techcamp.activities.BaseFragment;
+import vn.techcamp.activities.TalkDetailActivity;
+import vn.techcamp.adapters.TopicAdapter;
 import vn.techcamp.android.R;
 import vn.techcamp.loaders.TopicsCursorLoader;
 import vn.techcamp.models.Topic;
 import vn.techcamp.models.VoteResponse;
 import vn.techcamp.services.GsonHttpResponseHandler;
 import vn.techcamp.services.HttpService;
+import vn.techcamp.utils.Configs;
 import vn.techcamp.utils.Logging;
 import vn.techcamp.utils.MiscUtils;
 
@@ -35,6 +37,7 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
     private PullToRefreshListView lvTopics;
     private CursorAdapter topicAdapter;
     private boolean isFirstTime = true;
+    private String currentFilterStr = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,13 +55,13 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new TopicsCursorLoader(getActivity());
+        return new TopicsCursorLoader(getActivity(), currentFilterStr);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         if (topicAdapter == null) {
-            topicAdapter = new TopicAdapter(getActivity(), cursor, 0, this);
+            topicAdapter = new TopicAdapter(getActivity(), cursor, 0, this, Configs.isEventDay());
         } else {
             topicAdapter.swapCursor(cursor);
         }
@@ -74,11 +77,20 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
         }
     }
 
+    public void filterTopic(String queryString) {
+        currentFilterStr = queryString;
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    public String getFilterString() {
+        return currentFilterStr;
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
     }
 
-    private void getTopics() {
+    protected void getTopics() {
         Logging.debug("Load new topics");
         String deviceId = MiscUtils.getUUID(getActivity().getApplicationContext());
         HttpService.getTopics(getActivity().getApplicationContext(), deviceId, new GsonHttpResponseHandler<Topic[]>(Topic[].class) {
@@ -117,7 +129,13 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //TODO (D.Vu): Open topic detail page.
+        Long topicId = (Long) view.getTag();
+        Logging.debug("On Item click event " + topicId);
+        if (topicId != null) {
+            Intent showTopicDetailIntent = new Intent(getActivity(), TalkDetailActivity.class);
+            showTopicDetailIntent.putExtra(TalkDetailActivity.EXTRA_TOPIC, topicId);
+            startActivity(showTopicDetailIntent);
+        }
     }
 
     @Override
@@ -127,53 +145,46 @@ public class BrowseTalksFragment extends BaseFragment implements LoaderManager.L
             Logging.debug("Vote topic " + topicId);
             showLoadingDialog();
             String deviceId = MiscUtils.getUUID(getActivity().getApplicationContext());
-            HttpService.voteTopic(getActivity().getApplicationContext(), deviceId, topicId, new GsonHttpResponseHandler<VoteResponse>(VoteResponse.class) {
-                @Override
-                public void onSuccess(int i, Header[] headers, String s, VoteResponse voteResponse) {
-                    Logging.debug("Vote topic success");
-                    if (getActivity() != null && isAdded()) {
-                        getTopics();
+            if (Configs.isEventDay()) {
+                HttpService.favorTopic(getActivity().getApplicationContext(), deviceId, topicId, new GsonHttpResponseHandler<VoteResponse>(VoteResponse.class) {
+                    @Override
+                    public void onSuccess(int i, Header[] headers, String s, VoteResponse voteResponse) {
+                        Logging.debug("Favor topic success");
+                        if (getActivity() != null && isAdded()) {
+                            getTopics();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int i, Header[] headers, Throwable throwable, String s, VoteResponse voteResponse) {
-                    Logging.debug("Vote topic failure");
-                    if (getActivity() != null && isAdded()) {
-                        hideLoadingDialog();
-                        showErrorToast(R.string.topic_vote_error);
+                    @Override
+                    public void onFailure(int i, Header[] headers, Throwable throwable, String s, VoteResponse voteResponse) {
+                        Logging.debug("Vote topic failure");
+                        if (getActivity() != null && isAdded()) {
+                            hideLoadingDialog();
+                            showErrorToast(R.string.topic_vote_error);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                HttpService.voteTopic(getActivity().getApplicationContext(), deviceId, topicId, new GsonHttpResponseHandler<VoteResponse>(VoteResponse.class) {
+                    @Override
+                    public void onSuccess(int i, Header[] headers, String s, VoteResponse voteResponse) {
+                        Logging.debug("Vote topic success");
+                        if (getActivity() != null && isAdded()) {
+                            getTopics();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int i, Header[] headers, Throwable throwable, String s, VoteResponse voteResponse) {
+                        Logging.debug("Vote topic failure");
+                        if (getActivity() != null && isAdded()) {
+                            hideLoadingDialog();
+                            showErrorToast(R.string.topic_vote_error);
+                        }
+                    }
+                });
+            }
         }
     }
 
-    private static class TopicAdapter extends CursorAdapter {
-        private View.OnClickListener btVoteClickListener;
-
-        public TopicAdapter(Context context, Cursor c, int flags, View.OnClickListener voteClickListener) {
-            super(context, c, flags);
-            this.btVoteClickListener = voteClickListener;
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            View convertView = LayoutInflater.from(context).inflate(R.layout.item_browse_topic, viewGroup, false);
-            return convertView;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            TextView tvTopicName = (TextView) view.findViewById(R.id.tv_topic_name);
-            TextView tvSpeakerName = (TextView) view.findViewById(R.id.tv_topic_speaker);
-            TextView btVote = (TextView) view.findViewById(R.id.bt_vote);
-            Topic topic = new Topic(cursor);
-            tvTopicName.setText(topic.getTitle());
-            tvSpeakerName.setText(topic.getSpeakerName());
-            btVote.setText(context.getResources().getQuantityString(R.plurals.topic_vote_count, (int) topic.getVoteCount(), topic.getVoteCount()));
-            btVote.setEnabled(!topic.isVoted());
-            btVote.setTag(topic.getId());
-            btVote.setOnClickListener(btVoteClickListener);
-        }
-    }
 }

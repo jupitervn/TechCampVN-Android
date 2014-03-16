@@ -30,6 +30,7 @@ import vn.techcamp.utils.Logging;
 public class HttpService {
     private static final String BASE_URL = "http://techcamp.vn/";
     private static final String VOTE_PATH = BASE_URL + "voting/topic/vote";
+    private static final String FAVOR_PATH = BASE_URL + "voting/topic/fav";
     private static final String TOPICS_PATH = BASE_URL + "voting/topic/api";
     private static final String REGISTER_DEVICE_PATH = BASE_URL + "voting/notification/register";
     private static final String ANNOUNCEMENT_PATH = BASE_URL + "voting/notification/list";
@@ -99,6 +100,13 @@ public class HttpService {
         params.add("id", deviceId);
         params.add("topic_id", String.valueOf(topicId));
         httpClient.post(VOTE_PATH, params, handler);
+    }
+
+    public static void favorTopic(Context context, String deviceId, long topicId, GsonHttpResponseHandler<VoteResponse> handler) {
+        RequestParams params = new RequestParams();
+        params.add("id", deviceId);
+        params.add("topic_id", String.valueOf(topicId));
+        httpClient.post(FAVOR_PATH, params, handler);
     }
 
     /**

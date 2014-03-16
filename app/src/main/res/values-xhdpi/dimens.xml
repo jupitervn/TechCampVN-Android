@@ -7,4 +7,12 @@
     <dimen name="info_padding">10dp</dimen>
     <dimen name="info_padding_with_icon">60dp</dimen>
     <dimen name="info_text_size">22sp</dimen>
+    <dimen name="tab_text_size">11sp</dimen>
+    <!-- Topic detail screen-->
+    <dimen name="topic_detail_vertical_spacing">15dp</dimen>
+    <dimen name="topic_detail_horizontal_spacing">20dp</dimen>
+    <dimen name="topic_detail_item_spacing">10dp</dimen>
+    <dimen name="topic_detail_item_small_spacing">5dp</dimen>
+    <dimen name="topic_detail_topic_text_size">20sp</dimen>
+    <dimen name="topic_detail_label_text_size">17sp</dimen>
 </resources>

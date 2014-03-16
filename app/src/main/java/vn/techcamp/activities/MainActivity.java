@@ -2,14 +2,18 @@ package vn.techcamp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,7 +30,9 @@ import vn.techcamp.utils.MiscUtils;
 import vn.techcamp.utils.PreferenceUtils;
 
 /**
- * Created by Jupiter on 2/15/14.
+ * Main activity class with action bar tabs.
+ * @author Cao Duy Vu (vu.cao.duy@gmail.com)
+ *
  */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
     public static final String EXTRA_TAB_INDEX = "extra-tab-index";
@@ -42,6 +48,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 0x1;
 
     private Spinner navigationSpinner;
+    private SearchView mnSearchView;
     private int currentSpinnerPosition = 0;
     private int currentTabIndex = 0;
 
@@ -71,9 +78,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        checkPlayServices();
+        checkPlayServices(false);
     }
 
     private void initActionBar() {
@@ -93,12 +100,64 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
             actionBar.setCustomView(customView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             actionBar.setDisplayShowCustomEnabled(true);
             navigationSpinner = (Spinner) customView.findViewById(R.id.sp_navigation);
-            navigationSpinner.setAdapter(new ArrayAdapter<String>(this, R.layout.item_navigation_list, android.R.id.text1, getResources().getStringArray(R.array.navigation_array)));
+            ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, R.layout.item_navigation_list, android.R.id.text1, getResources().getStringArray(R.array.navigation_array));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                listAdapter.setDropDownViewResource(android.support.v7.appcompat.R.layout.support_simple_spinner_dropdown_item);
+            }
+            navigationSpinner.setAdapter(listAdapter);
             navigationSpinner.setSelection(currentSpinnerPosition);
             navigationSpinner.setOnItemSelectedListener(this);
+            mnSearchView = (SearchView) customView.findViewById(R.id.mn_search_view);
+            EditText etInput = ((EditText)mnSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+            if (etInput != null) {
+                etInput.setTextColor(Color.WHITE);
+            }
+            BrowseContainerFragment mFragment = (BrowseContainerFragment) getSupportFragmentManager().findFragmentByTag(BROWSE_TAG);
+            if (mFragment != null) {
+                mnSearchView.setQuery(mFragment.getCurrentQueryStr(), true);
+            }
+            mnSearchView.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mnSearchView.isIconfiedByDefault() && !mnSearchView.isIconified()) {
+                        navigationSpinner.setVisibility(View.GONE);
+                    } else {
+                        navigationSpinner.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            });
+            mnSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    navigationSpinner.setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
+            mnSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+                @Override
+                public boolean onQueryTextSubmit(String string) {
+                    filterTopics(string);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String string) {
+                    filterTopics(string);
+                    return true;
+                }
+            });
         } else {
             actionBar.setTitle(R.string.action_bar_title);
             actionBar.setDisplayShowCustomEnabled(false);
+        }
+    }
+
+    private void filterTopics(String queryString) {
+        BrowseContainerFragment mFragment = (BrowseContainerFragment) getSupportFragmentManager().findFragmentByTag(BROWSE_TAG);
+        if (mFragment != null) {
+            mFragment.filterTopics(queryString);
         }
     }
 
@@ -110,7 +169,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private void registerGcm() {
-        if (checkPlayServices()) {
+        if (checkPlayServices(true)) {
             String regId = getRegistrationId(this);
             if (regId.isEmpty()) {
                 registerInBackground();
@@ -150,12 +209,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
      * it doesn't, display a dialog that allows users to download the APK from
      * the Google Play Store or enable it in the device's system settings.
      */
-    private boolean checkPlayServices() {
+    private boolean checkPlayServices(boolean shouldShowDialog) {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                if (shouldShowDialog) {
+                    GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                            PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                }
             } else {
                 Logging.debug("This device is not supported.");
                 Toast.makeText(this, R.string.gcm_not_supported_error, Toast.LENGTH_LONG).show();
@@ -171,6 +232,11 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         BrowseContainerFragment mFragment = (BrowseContainerFragment) getSupportFragmentManager().findFragmentByTag(BROWSE_TAG);
         Logging.debug("On navigation " + (mFragment != null));
         if (mFragment != null) {
+            if (position == 1) {
+                mnSearchView.setVisibility(View.GONE);
+            } else {
+                mnSearchView.setVisibility(View.VISIBLE);
+            }
             mFragment.switchFragment(position);
         }
         currentSpinnerPosition = position;
@@ -232,7 +298,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
                 // If it exists, simply attach it in order to show it
                 ft.attach(mFragment);
             }
-//            mActivity.initActionBar(mTag);
             mActivity.changeActionBar(mTag);
         }
 

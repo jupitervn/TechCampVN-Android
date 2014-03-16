@@ -8,5 +8,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sp_navigation"
+        android:spinnerMode="dropdown"
         style="@style/Styled.Navigation.Spinner"/>
+
+    <android.support.v7.widget.SearchView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:id="@+id/mn_search_view"
+        android:layout_alignParentRight="true"
+        >
+
+    </android.support.v7.widget.SearchView>
 </RelativeLayout>

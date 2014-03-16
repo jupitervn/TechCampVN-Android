@@ -26,20 +26,25 @@
         <item name="actionBarTabTextStyle">@style/Styled.ActionBar.TabText</item>
         <item name="actionBarTabStyle">@style/Styled.ActionBar.TabStyle</item>
         <item name="actionBarTabBarStyle">@style/Styled.ActionBar.TabBar</item>
+
+        <!-- Hack to convert search view text color to white-->
     </style>
 
     <style name="Styled.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#FF0000</item>
+        <item name="android:background">@drawable/action_bar_bgr</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_styled</item>
         <item name="android:backgroundSplit">@drawable/ab_solid_styled</item>
 
         <!-- Support library compatibility -->
         <!--<item name="background">@drawable/ab</item>-->
+        <item name="background">@drawable/action_bar_bgr</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_styled</item>
+        <item name="backgroundSplit">@drawable/ab_solid_styled</item>
     </style>
 
     <style name="Styled.ActionBar.TabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
         <item name="android:textColor">@color/tab_bar_text_color</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">@dimen/tab_text_size</item>
         <!-- The textColor property is backward compatible with the Support Library -->
     </style>
 
@@ -61,6 +66,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">14sp</item>
 
+    </style>
+
+    <style name="Styled.ActionBar.ActionButton" parent="@style/Widget.AppCompat.Light.ActionButton">
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingRight">5dip</item>
     </style>
     <style name="Styled.TextAppearance.Announcement.Content" parent="@android:style/TextAppearance">
         <item name="android:textColor">@android:color/black</item>

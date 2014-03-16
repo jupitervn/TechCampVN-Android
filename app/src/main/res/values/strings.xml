@@ -19,10 +19,14 @@
     <string name="topic_vote_error">Cannot process your request, please check your connection and try again.</string>
     <string name="event_place">RMIT SOUTH SAIGON</string>
     <string name="event_time">7:00, 23.03.2014</string>
+    <string name="topic_detail_author_label">About author:</string>
     <plurals name="topic_vote_count">
         <item quantity="zero">%d vote</item>
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>
     </plurals>
-    
+    <!-- Talk detail screen -->
+    <string name="talk_detail_title">Talk Detail</string>
+    <string name="room_not_available">Not available</string>
+
 </resources>

@@ -17,6 +17,7 @@ import vn.techcamp.utils.Logging;
 public class BrowseContainerFragment extends BaseFragment {
     private static final String BROWSE_TAG = "browse-topic-tag";
     private static final String SCHEDULE_TAG = "schedule-topic-tag";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_container, container, false);
@@ -38,5 +39,18 @@ public class BrowseContainerFragment extends BaseFragment {
         }
         ft.replace(android.R.id.content, mFragment, tag);
         ft.commit();
+    }
+    public void filterTopics(String queryStr) {
+        BrowseTalksFragment mFragment = (BrowseTalksFragment) getChildFragmentManager().findFragmentByTag(BROWSE_TAG);
+        if (mFragment != null) {
+            mFragment.filterTopic(queryStr);
+        }
+    }
+    public String getCurrentQueryStr() {
+        BrowseTalksFragment mFragment = (BrowseTalksFragment) getChildFragmentManager().findFragmentByTag(BROWSE_TAG);
+        if (mFragment != null) {
+            return mFragment.getFilterString();
+        }
+        return null;
     }
 }

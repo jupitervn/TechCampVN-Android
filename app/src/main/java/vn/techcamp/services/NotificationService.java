@@ -85,7 +85,7 @@ public class NotificationService extends IntentService {
                 }
                 retryTimes *= 2;
             }
-        } while (retryCounts > 3);
+        } while (retryCounts > 5);
         stopSelf();
     }
 

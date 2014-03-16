@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/topic_detail_horizontal_spacing"
+        android:paddingRight="@dimen/topic_detail_horizontal_spacing"
+        android:paddingTop="@dimen/topic_detail_vertical_spacing"
+        android:paddingBottom="@dimen/topic_detail_vertical_spacing">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_name"
+            android:textSize="@dimen/topic_detail_topic_text_size"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_room"
+            android:gravity="bottom"
+            android:layout_marginTop="@dimen/topic_detail_item_small_spacing"
+            android:drawableLeft="@drawable/location_icon"
+            android:drawablePadding="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_speaker"
+            android:gravity="bottom"
+            android:layout_marginTop="@dimen/topic_detail_item_small_spacing"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@drawable/person_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_votes"
+            android:gravity="bottom"
+            android:drawablePadding="5dp"
+            android:layout_marginTop="@dimen/topic_detail_item_small_spacing"
+            android:drawableLeft="@drawable/detail_vote_icon"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_grey_color"
+            android:layout_marginTop="@dimen/topic_detail_item_spacing"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_description"
+            android:layout_marginTop="@dimen/topic_detail_item_spacing"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/topic_detail_author_label"
+            android:textStyle="bold"
+            android:textSize="@dimen/topic_detail_label_text_size"
+            android:layout_marginTop="@dimen/topic_detail_item_spacing"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_topic_speaker_info"
+            android:layout_marginTop="@dimen/topic_detail_item_small_spacing"/>
+    </LinearLayout>
+</ScrollView>

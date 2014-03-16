@@ -40,19 +40,19 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    protected void showLoadingDialog() {
+    public void showLoadingDialog() {
         showLoadingDialog(R.string.loading_text);
     }
 
-    protected void showLoadingDialog(int resId) {
+    public void showLoadingDialog(int resId) {
         showLoadingDialog(resId, false);
     }
 
-    protected void showLoadingDialog(int resId, boolean isCancelable) {
+    public void showLoadingDialog(int resId, boolean isCancelable) {
         showLoadingDialog(getString(resId), isCancelable);
     }
 
-    protected void showLoadingDialog(String loadingText, boolean isCancelable) {
+    public void showLoadingDialog(String loadingText, boolean isCancelable) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
         }
@@ -62,18 +62,18 @@ public class BaseFragment extends Fragment {
         mProgressDialog.show();
     }
 
-    protected void hideLoadingDialog() {
+    public void hideLoadingDialog() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         isShowingProgressDialog = false;
     }
 
-    protected void showGeneralErrorToast() {
-
+    public void showGeneralErrorToast() {
+        showErrorToast(R.string.general_error_text);
     }
 
-    protected  void showErrorToast(int resId) {
+    public void showErrorToast(int resId) {
         if (getActivity() != null && !isAdded()) {
             Toast.makeText(getActivity(), resId, Toast.LENGTH_LONG).show();
         }
