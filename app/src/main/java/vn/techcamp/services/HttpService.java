@@ -13,13 +13,21 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import vn.techcamp.models.Announcement;
 import vn.techcamp.models.Topic;
 import vn.techcamp.models.VoteResponse;
+import vn.techcamp.utils.HttpUtils;
 import vn.techcamp.utils.JSONUtils;
 import vn.techcamp.utils.Logging;
 
@@ -116,7 +124,7 @@ public class HttpService {
      */
     public static void registerDeviceToken(Context context, String deviceToken) {
         RequestParams params = new RequestParams();
-        params.add("device_id", deviceToken);
+        params.add("device_token", deviceToken);
         params.add("platform", "Android");
 
         httpClient.post(REGISTER_DEVICE_PATH, params, new JsonHttpResponseHandler() {
@@ -131,6 +139,46 @@ public class HttpService {
                 super.onFailure(e, errorResponse);
             }
         });
+    }
+
+    public static void registerDeviceTokenSync(String deviceToken) {
+        try {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("device_token", deviceToken);
+            params.put("platform", "Android");
+            URL url = new URL(REGISTER_DEVICE_PATH);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            OutputStream os = connection.getOutputStream();
+            byte[] byteParams = encodeParameters(params, "UTF-8");
+            os.write(byteParams);
+            os.flush();
+            os.close();
+            connection.setReadTimeout(HttpUtils.HTTP_READ_TIMEOUT);
+            connection.setConnectTimeout(HttpUtils.HTTP_TIMEOUT);
+            connection.connect();
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static byte[] encodeParameters(Map<String, String> params, String paramsEncoding) {
+        StringBuilder encodedParams = new StringBuilder();
+        try {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                encodedParams.append(URLEncoder.encode(entry.getKey(), paramsEncoding));
+                encodedParams.append('=');
+                encodedParams.append(URLEncoder.encode(entry.getValue(), paramsEncoding));
+                encodedParams.append('&');
+            }
+            return encodedParams.toString().getBytes(paramsEncoding);
+        } catch (Exception uee) {
+            throw new RuntimeException("Encoding not supported: " + paramsEncoding, uee);
+        }
+
     }
 
     /**

@@ -32,10 +32,13 @@ import vn.techcamp.utils.UIUtils;
 public class AnnouncementFragment extends BaseFragment implements PullToRefreshBase.OnRefreshListener2<ListView>, LoaderManager.LoaderCallbacks<Cursor> {
     private PullToRefreshListView lvAnnouncements;
     private AnnouncementAdapter announcementAdapter;
+    private View sponsorView;
+
     private boolean isFirstTime = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        sponsorView = inflater.inflate(R.layout.logo_display_layout, null, false);
         return inflater.inflate(R.layout.fragment_announcement, container, false);
     }
 
@@ -44,6 +47,7 @@ public class AnnouncementFragment extends BaseFragment implements PullToRefreshB
         super.onViewCreated(view, savedInstanceState);
         lvAnnouncements = (PullToRefreshListView) view.findViewById(R.id.lv_announcements);
         lvAnnouncements.setOnRefreshListener(this);
+        lvAnnouncements.getRefreshableView().addFooterView(sponsorView);
 
     }
 

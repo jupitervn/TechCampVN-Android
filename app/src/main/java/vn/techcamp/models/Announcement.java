@@ -14,7 +14,7 @@ public class Announcement extends BaseModel{
     private long id;
     private String subject;
     private String message;
-    private Date sendAt;
+    private Date sentAt;
 
     public Announcement(Cursor c) {
         super(c);
@@ -22,7 +22,7 @@ public class Announcement extends BaseModel{
         this.subject = c.getString(c.getColumnIndex(TechCampSqlStructure.TABLE_ANNOUNCEMENT.SUBJECT));
         this.message = c.getString(c.getColumnIndex(TechCampSqlStructure.TABLE_ANNOUNCEMENT.MESSAGE));
         long sendTime = c.getLong(c.getColumnIndex(TechCampSqlStructure.TABLE_ANNOUNCEMENT.DATE));
-        this.sendAt = new Date(sendTime);
+        this.sentAt = new Date(sendTime);
 
     }
 
@@ -43,11 +43,11 @@ public class Announcement extends BaseModel{
     }
 
     public Date getSendAt() {
-        return sendAt;
+        return sentAt;
     }
 
     public void setSendAt(Date sendAt) {
-        this.sendAt = sendAt;
+        this.sentAt = sendAt;
     }
 
     @Override
@@ -57,8 +57,8 @@ public class Announcement extends BaseModel{
         contentValues.put(TechCampSqlStructure.TABLE_ANNOUNCEMENT.SUBJECT, this.subject);
         contentValues.put(TechCampSqlStructure.TABLE_ANNOUNCEMENT.MESSAGE, this.message);
         long announcementTime;
-        if (this.sendAt != null) {
-            announcementTime = this.sendAt.getTime();
+        if (this.sentAt != null) {
+            announcementTime = this.sentAt.getTime();
         } else {
             announcementTime = (new Date()).getTime();
         }

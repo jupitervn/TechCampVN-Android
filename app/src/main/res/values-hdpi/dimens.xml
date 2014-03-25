@@ -2,4 +2,7 @@
 <resources>
     <dimen name="tab_text_size">10sp</dimen>
     <dimen name="info_text_size">20sp</dimen>
+    <dimen name="info_dot_size">80dp</dimen>
+    <dimen name="info_dot_half_size">-40dp</dimen>
+    <dimen name="info_padding_with_icon">50dp</dimen>
 </resources>

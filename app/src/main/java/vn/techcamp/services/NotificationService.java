@@ -31,7 +31,7 @@ import vn.techcamp.utils.PreferenceUtils;
 public class NotificationService extends IntentService {
     public static final String ACTION_REGISTER_GCM = "vn.techcamp.android.ACTION_REGISTER_GCM";
     public static final String ACTION_RECEIVE_NOTIFICATION = "com.google.android.c2dm.intent.RECEIVE";
-    private static final String SENDER_ID = "401779820821";
+    private static final String SENDER_ID = "";
     private static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationMgr;
 
@@ -69,11 +69,11 @@ public class NotificationService extends IntentService {
         do {
             try {
                 GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-                String regid = gcm.register(SENDER_ID);
+                final String regId = gcm.register(SENDER_ID);
                 // Persist the regID - no need to register again.
-                Logging.debug("Register Id " + regid);
-                HttpService.registerDeviceToken(getApplicationContext(), regid);
-                PreferenceUtils.storeGcmRegId(getApplicationContext(), regid);
+//                HttpService.registerDeviceToken(getApplicationContext(), regId);
+                HttpService.registerDeviceTokenSync(regId);
+                PreferenceUtils.storeGcmRegId(getApplicationContext(), regId);
                 break;
             } catch (IOException ex) {
                 Logging.error(ex.getMessage(), ex);
@@ -86,7 +86,7 @@ public class NotificationService extends IntentService {
                 retryTimes *= 2;
             }
         } while (retryCounts > 5);
-        stopSelf();
+//        stopSelf();
     }
 
     private void handleGcmIntent(Intent intent) {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tab_text_size">10sp</dimen>
+    <dimen name="info_text_size">15sp</dimen>
+    <dimen name="info_dot_size">70dp</dimen>
+    <dimen name="info_dot_half_size">-35dp</dimen>
+    <dimen name="info_padding_with_icon">45dp</dimen>
+</resources>

@@ -169,9 +169,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
     }
 
     private void registerGcm() {
-        if (checkPlayServices(true)) {
+        boolean isPlayService = checkPlayServices(true);
+        Logging.debug("Register GCM " + isPlayService);
+        if (isPlayService) {
             String regId = getRegistrationId(this);
-            if (regId.isEmpty()) {
+            if (regId == null || regId.isEmpty()) {
+                Logging.debug("Register in background");
                 registerInBackground();
             }
         } else {
