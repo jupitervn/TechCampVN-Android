@@ -1,12 +1,12 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
     signingConfigs {
         release {
@@ -33,7 +33,6 @@ dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile 'com.google.android.gms:play-services:4.0.30'
-    //compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile files('libs/android-async-http-1.4.4.jar')
